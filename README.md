@@ -1,6 +1,6 @@
-# Create T3 App
+# Yongopu
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Modern streak tracker for all your daily habits - Yongopu [연거푸] is Korean and means "consecutively, successively, in a row"
 
 ## What's next? How do I make an app with this?
 
