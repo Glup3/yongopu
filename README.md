@@ -2,6 +2,18 @@
 
 Modern streak tracker for all your daily habits - Yongopu [연거푸] is Korean and means "consecutively, successively, in a row"
 
+## How to get started
+
+### Starting
+
+1. pnpm install
+2. `pscale connect yongopu dev --port 3309`
+3. `pnpm dev`
+
+```
+pnpm dlx prisma db push
+```
+
 ## What's next? How do I make an app with this?
 
 We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
