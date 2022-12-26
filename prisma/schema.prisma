@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["filteredRelationCount"]
 }
 
 datasource db {
@@ -12,6 +13,28 @@ datasource db {
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
   url          = env("DATABASE_URL")
   relationMode = "prisma"
+}
+
+enum HabitEventType {
+  START
+  DEFEAT
+}
+
+model HabitEvent {
+  id        String         @id @default(cuid())
+  date      DateTime       @db.Date
+  eventType HabitEventType
+  habitId   String
+  habit     Habit          @relation(fields: [habitId], references: [id], onDelete: Cascade)
+}
+
+model Habit {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events      HabitEvent[]
 }
 
 model Example {
@@ -55,6 +78,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  habits        Habit[]
 }
 
 model VerificationToken {
