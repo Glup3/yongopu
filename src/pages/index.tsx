@@ -7,6 +7,10 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+  const { data } = trpc.habit.getHabits.useQuery(undefined, {
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <>
@@ -50,6 +54,20 @@ const Home: NextPage = () => {
             </p>
             <AuthShowcase />
           </div>
+          <ul>
+            {!data ? (
+              <span>loading...</span>
+            ) : (
+              data.map((h) => (
+                <li key={h.id}>
+                  <span>{h.title} | </span>
+                  <span>{h.percentage?.toFixed(2) || "NaN"}% | </span>
+                  <span>{h.currentStreak} days | </span>
+                  <span>{h.longestStreak} days</span>
+                </li>
+              ))
+            )}
+          </ul>
         </div>
       </main>
     </>
