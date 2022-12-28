@@ -1,5 +1,7 @@
 import React from "react";
 import dayjs from "dayjs";
+import { CalendarGridItem } from "./CalendarGridItem";
+import { CalendarDaysHeader } from "./CalendarDaysHeader";
 
 type CalendarProps = {
   selectedYear: number;
@@ -17,21 +19,22 @@ export const Calendar: React.FC<CalendarProps> = ({
   const firstDay = dayjs(selectedDate).startOf("month");
   const fillerDaysStart = firstDay.get("day") - 1;
   const firstFillerDay = firstDay.subtract(fillerDaysStart, "days");
+  const today = dayjs();
 
   for (let i = 0; i < gridItemSize; i++) {
     gridItems.push(firstFillerDay.add(i, "days"));
   }
   return (
-    <div className="grid grid-cols-7 gap-4">
-      <div>Mo</div>
-      <div>Di</div>
-      <div>Mi</div>
-      <div>Do</div>
-      <div>Fr</div>
-      <div>Sa</div>
-      <div>So</div>
-      {gridItems.map((date, i) => (
-        <div key={i}>{date.format("DD.MM")}</div>
+    <div className="grid grid-cols-7 gap-2 text-center">
+      <CalendarDaysHeader />
+      {gridItems.map((date) => (
+        <CalendarGridItem
+          key={date.toISOString()}
+          date={date}
+          // isToday={date.isSame(today, "day")}
+          isToday={true}
+          state={"NORMAL"}
+        />
       ))}
     </div>
   );
