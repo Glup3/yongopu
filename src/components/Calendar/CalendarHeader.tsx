@@ -1,11 +1,6 @@
 import React from "react";
 import { type Dayjs } from "dayjs";
-import {
-  ChevronsRight,
-  ChevronsLeft,
-  ChevronLeft,
-  ChevronRight,
-} from "react-feather";
+import { ChevronsRight, ChevronsLeft, ChevronLeft, ChevronRight } from "react-feather";
 
 type Props = {
   selectedDate: Dayjs;
@@ -25,7 +20,7 @@ export const CalendarHeader: React.FC<Props> = ({
   onSelectedToday,
 }) => {
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between mb-2 px-4">
       <div className="flex">
         <ChevronsLeft onClick={onPrevYear} className="mr-2" />
         <ChevronLeft onClick={onPrevMonth} />

@@ -9,20 +9,16 @@ import {
   borderColor,
   padding,
   aspectRatio,
-  textAlign,
   display,
-  flex,
   flexDirection,
   justifyContent,
   height,
   width,
-  flexGrow,
   alignItems,
-  fontSize,
-  type TFontSize,
+  // type TFontSize,
 } from "tailwindcss-classnames";
 
-type GridItemState = "NORMAL" | "DEFEATED" | "SUCCEEDED" | "STARTED";
+export type GridItemState = "NORMAL" | "DEFEATED" | "SUCCEEDED" | "STARTED" | "LOADING";
 
 type Props = {
   date: Dayjs;
@@ -47,8 +43,8 @@ const stylesDiv = (state: GridItemState) =>
 const stylesText = (isCircled: boolean) =>
   classnames(
     borderWidth("border-2"),
-    borderRadius({ "rounded-full": isCircled }),
-    borderStyle("border-solid"),
+    borderRadius("rounded-full"),
+    borderStyle({ "border-solid": isCircled, "border-none": !isCircled }),
     borderColor("border-blue-800"),
     display("flex"),
     padding("p-1"),
@@ -57,10 +53,6 @@ const stylesText = (isCircled: boolean) =>
     // fontSize("text-[100%]" as TFontSize),
     width("w-8"),
     height("h-8"),
-
-    // textAlign("text-center"),
-    // justifyContent("justify-center"),
-    // flexGrow("grow-0"),
   );
 
 export const CalendarGridItem: React.FC<Props> = ({ date, state, isToday }) => {

@@ -1,7 +1,25 @@
 import dayjs from "dayjs";
+
 import { router, protectedProcedure } from "../trpc";
 
 export const habitRouter = router({
+  getUserHabits: protectedProcedure.query(async ({ ctx }) => {
+    const habits = await ctx.prisma.habit.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      select: {
+        id: true,
+        title: true,
+        events: true,
+      },
+      orderBy: {
+        title: "asc",
+      },
+    });
+
+    return new Map<string, typeof habits[0]>(habits.map((habit) => [habit.id, habit]));
+  }),
   getHabits: protectedProcedure.query(async ({ ctx }) => {
     const habits = await ctx.prisma.habit.findMany({
       where: { userId: ctx.session.user.id },
@@ -57,9 +75,7 @@ export const habitRouter = router({
     const longestStreaks = allEventsTillToday.map((h) => {
       const streaks: number[] = [];
       for (let i = 0; i < h.events.length - 1; i++) {
-        streaks.push(
-          dayjs(h.events[i + 1]?.date).diff(h.events[i]?.date, "days"),
-        );
+        streaks.push(dayjs(h.events[i + 1]?.date).diff(h.events[i]?.date, "days"));
       }
 
       return {
@@ -76,10 +92,7 @@ export const habitRouter = router({
         percentage: percentages.find((h2) => h.id === h2.id)?.percentage,
         currentStreak: latestDefeat
           ? dayjs().diff(latestDefeat, "days")
-          : dayjs().diff(
-              habitStarts.find((h2) => h.id === h2.habitId)?.date,
-              "days",
-            ),
+          : dayjs().diff(habitStarts.find((h2) => h.id === h2.habitId)?.date, "days"),
         longestStreak: longestStreaks.find((h2) => h.id === h2.id)?.streak,
       };
     });

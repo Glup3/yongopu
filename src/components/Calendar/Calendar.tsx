@@ -1,8 +1,40 @@
 import React from "react";
 import dayjs from "dayjs";
-import { CalendarGridItem } from "./CalendarGridItem";
+import { CalendarGridItem, type GridItemState } from "./CalendarGridItem";
 import { CalendarDaysHeader } from "./CalendarDaysHeader";
 import { CalendarHeader } from "./CalendarHeader";
+import { type HabitEvent } from "@prisma/client";
+
+const gridItemSize = 35;
+
+const getCalendarItemState = (
+  events: HabitEvent[] | undefined,
+  date: dayjs.Dayjs,
+  today: dayjs.Dayjs,
+  started: dayjs.Dayjs,
+): GridItemState => {
+  if (typeof events === "undefined") {
+    return "LOADING";
+  }
+
+  if (date.isAfter(today.subtract(1, "days"), "days")) {
+    return "NORMAL";
+  }
+
+  if (date.isBefore(started, "days")) {
+    return "NORMAL";
+  }
+
+  if (date.isSame(started, "days")) {
+    return "STARTED";
+  }
+
+  if (events.find((e) => dayjs(e.date).isSame(date, "days"))?.eventType === "DEFEAT") {
+    return "DEFEATED";
+  }
+
+  return "SUCCEEDED";
+};
 
 type CalendarProps = {
   selectedYear: number;
@@ -12,9 +44,8 @@ type CalendarProps = {
   onNextYear: () => void;
   onPrevYear: () => void;
   onSelectedToday: () => void;
+  events: HabitEvent[] | undefined;
 };
-
-const gridItemSize = 35;
 
 export const Calendar: React.FC<CalendarProps> = ({
   selectedMonth,
@@ -24,6 +55,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   onNextYear,
   onPrevYear,
   onSelectedToday,
+  events,
 }) => {
   const gridItems: dayjs.Dayjs[] = [];
   const selectedDate = dayjs(new Date(selectedYear, selectedMonth, 1));
@@ -31,12 +63,13 @@ export const Calendar: React.FC<CalendarProps> = ({
   const fillerDaysStart = firstDay.get("day") - 1;
   const firstFillerDay = firstDay.subtract(fillerDaysStart, "days");
   const today = dayjs();
+  const startDate = events?.find((e) => e.eventType === "START")?.date;
 
   for (let i = 0; i < gridItemSize; i++) {
     gridItems.push(firstFillerDay.add(i, "days"));
   }
   return (
-    <div className="max-w-[600px]">
+    <div className="max-w-[600px] m-1">
       <CalendarHeader
         selectedDate={selectedDate}
         onPrevMonth={onPrevMonth}
@@ -45,15 +78,14 @@ export const Calendar: React.FC<CalendarProps> = ({
         onPrevYear={onPrevYear}
         onSelectedToday={onSelectedToday}
       />
-      <div className="grid grid-cols-7 gap-2 text-center">
-        <CalendarDaysHeader />
+      <CalendarDaysHeader />
+      <div className="grid grid-cols-7 gap-[2px] text-center bg-slate-100">
         {gridItems.map((date) => (
           <CalendarGridItem
             key={date.toISOString()}
             date={date}
-            // isToday={date.isSame(today, "day")}
-            isToday={true}
-            state={"NORMAL"}
+            isToday={date.isSame(today, "day")}
+            state={getCalendarItemState(events, date, today, dayjs(startDate))}
           />
         ))}
       </div>

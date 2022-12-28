@@ -2,7 +2,7 @@ import React from "react";
 
 export const CalendarDaysHeader = () => {
   return (
-    <>
+    <div className="grid grid-cols-7 text-center">
       <div>Mo</div>
       <div>Di</div>
       <div>Mi</div>
@@ -10,6 +10,6 @@ export const CalendarDaysHeader = () => {
       <div>Fr</div>
       <div>Sa</div>
       <div>So</div>
-    </>
+    </div>
   );
 };
