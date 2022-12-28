@@ -3,12 +3,12 @@ import dayjs from "dayjs";
 import { CalendarGridItem, type GridItemState } from "./CalendarGridItem";
 import { CalendarDaysHeader } from "./CalendarDaysHeader";
 import { CalendarHeader } from "./CalendarHeader";
-import { type HabitEvent } from "@prisma/client";
+import { type StreakEvent } from "@prisma/client";
 
 const gridItemSize = 35;
 
 const getCalendarItemState = (
-  events: HabitEvent[] | undefined,
+  events: StreakEvent[] | undefined,
   date: dayjs.Dayjs,
   today: dayjs.Dayjs,
   started: dayjs.Dayjs,
@@ -44,7 +44,7 @@ type CalendarProps = {
   onNextYear: () => void;
   onPrevYear: () => void;
   onSelectedToday: () => void;
-  events: HabitEvent[] | undefined;
+  events: StreakEvent[] | undefined;
 };
 
 export const Calendar: React.FC<CalendarProps> = ({
@@ -80,14 +80,19 @@ export const Calendar: React.FC<CalendarProps> = ({
       />
       <CalendarDaysHeader />
       <div className="grid grid-cols-7 gap-[2px] text-center bg-slate-100">
-        {gridItems.map((date) => (
-          <CalendarGridItem
-            key={date.toISOString()}
-            date={date}
-            isToday={date.isSame(today, "day")}
-            state={getCalendarItemState(events, date, today, dayjs(startDate))}
-          />
-        ))}
+        {gridItems.map((date) => {
+          const s = getCalendarItemState(events, date, today, dayjs(startDate));
+          console.log(s);
+
+          return (
+            <CalendarGridItem
+              key={date.toISOString()}
+              date={date}
+              isToday={date.isSame(today, "day")}
+              state={s}
+            />
+          );
+        })}
       </div>
     </div>
   );

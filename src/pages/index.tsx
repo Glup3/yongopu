@@ -7,7 +7,7 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-  const { data } = trpc.habit.getHabits.useQuery(undefined, {
+  const { data } = trpc.streak.getStreaks.useQuery(undefined, {
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
@@ -32,8 +32,8 @@ const Home: NextPage = () => {
             >
               <h3 className="text-2xl font-bold">First Steps →</h3>
               <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
+                Just the basics - Everything you need to know to set up your database and
+                authentication.
               </div>
             </Link>
             <Link
@@ -43,8 +43,7 @@ const Home: NextPage = () => {
             >
               <h3 className="text-2xl font-bold">Documentation →</h3>
               <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
+                Learn more about Create T3 App, the libraries it uses, and how to deploy it.
               </div>
             </Link>
           </div>
@@ -58,12 +57,12 @@ const Home: NextPage = () => {
             {!data ? (
               <span>loading...</span>
             ) : (
-              data.map((h) => (
-                <li key={h.id}>
-                  <span>{h.title} | </span>
-                  <span>{h.percentage?.toFixed(2) || "NaN"}% | </span>
-                  <span>{h.currentStreak} days | </span>
-                  <span>{h.longestStreak} days</span>
+              data.map((streak) => (
+                <li key={streak.id}>
+                  <span>{streak.title} | </span>
+                  <span>{streak.percentage?.toFixed(2) || "NaN"}% | </span>
+                  <span>{streak.currentStreak} days | </span>
+                  <span>{streak.longestStreak} days</span>
                 </li>
               ))
             )}

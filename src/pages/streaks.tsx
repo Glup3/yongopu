@@ -3,15 +3,15 @@ import { type NextPage } from "next";
 import { useState } from "react";
 
 import { Calendar } from "../components/Calendar/Calendar";
-import { HabitSelector } from "../components/Habit/HabitSelector";
+import { StreakSelector } from "../components/Streak/StreakSelector";
 
 import { trpc } from "../utils/trpc";
 
-const HabitsPage: NextPage = () => {
-  const [habitId, setHabitId] = useState<string | undefined>();
-  const { data } = trpc.habit.getUserHabits.useQuery(undefined, {
-    onSuccess: (habitsMap) => {
-      setHabitId(habitsMap.keys().next().value);
+const StreaksPage: NextPage = () => {
+  const [streakId, setStreakId] = useState<string | undefined>();
+  const { data } = trpc.streak.getUserStreaks.useQuery(undefined, {
+    onSuccess: (streaksMap) => {
+      setStreakId(streaksMap.keys().next().value);
     },
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
@@ -29,10 +29,10 @@ const HabitsPage: NextPage = () => {
     <>
       <main className="container mx-auto">
         <div className="mb-6">
-          <HabitSelector
-            selectedHabitId={habitId}
-            setSelectedHabitId={setHabitId}
-            habits={
+          <StreakSelector
+            selectedStreakId={streakId}
+            setSelectedStreakId={setStreakId}
+            streaks={
               data
                 ? Array.from(data, ([key, value]) => ({
                     id: key,
@@ -50,11 +50,11 @@ const HabitsPage: NextPage = () => {
           onNextYear={handleNextYear}
           onPrevYear={handlePrevYear}
           onSelectedToday={handleSelectedToday}
-          events={data?.get(habitId || "")?.events}
+          events={data?.get(streakId || "")?.events}
         />
       </main>
     </>
   );
 };
 
-export default HabitsPage;
+export default StreaksPage;

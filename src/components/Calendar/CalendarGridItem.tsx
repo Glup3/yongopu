@@ -15,6 +15,7 @@ import {
   height,
   width,
   alignItems,
+  animation,
   // type TFontSize,
 } from "tailwindcss-classnames";
 
@@ -33,11 +34,13 @@ const stylesDiv = (state: GridItemState) =>
       "bg-green-500": state === "SUCCEEDED",
       "bg-red-400": state === "DEFEATED",
       "bg-sky-400": state === "STARTED",
+      "bg-gray-200": state === "LOADING",
     }),
     aspectRatio("aspect-square"),
     alignItems("items-center"),
     display("flex"),
     justifyContent("justify-center"),
+    animation({ "animate-pulse": state === "LOADING" }),
   );
 
 const stylesText = (isCircled: boolean) =>

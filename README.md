@@ -1,6 +1,6 @@
 # Yongopu
 
-Modern streak tracker for all your daily habits - Yongopu [연거푸] is Korean and means "consecutively, successively, in a row"
+Yongopu [연거푸] is Korean and means "consecutively, successively, in a row" - the modern streak tracker
 
 ## How to get started
 
