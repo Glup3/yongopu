@@ -80,19 +80,15 @@ export const Calendar: React.FC<CalendarProps> = ({
       />
       <CalendarDaysHeader />
       <div className="grid grid-cols-7 gap-[2px] text-center bg-slate-100">
-        {gridItems.map((date) => {
-          const s = getCalendarItemState(events, date, today, dayjs(startDate));
-          console.log(s);
-
-          return (
-            <CalendarGridItem
-              key={date.toISOString()}
-              date={date}
-              isToday={date.isSame(today, "day")}
-              state={s}
-            />
-          );
-        })}
+        {gridItems.map((date) => (
+          <CalendarGridItem
+            key={date.toISOString()}
+            date={date}
+            isToday={date.isSame(today, "day")}
+            isFaded={!date.isSame(selectedDate, "month")}
+            state={getCalendarItemState(events, date, today, dayjs(startDate))}
+          />
+        ))}
       </div>
     </div>
   );

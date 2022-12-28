@@ -16,6 +16,7 @@ import {
   width,
   alignItems,
   animation,
+  opacity,
   // type TFontSize,
 } from "tailwindcss-classnames";
 
@@ -25,9 +26,10 @@ type Props = {
   date: Dayjs;
   state: GridItemState;
   isToday: boolean;
+  isFaded: boolean;
 };
 
-const stylesDiv = (state: GridItemState) =>
+const stylesDiv = (state: GridItemState, isFaded: boolean) =>
   classnames(
     backgroundColor({
       "bg-slate-200": state === "NORMAL",
@@ -41,6 +43,7 @@ const stylesDiv = (state: GridItemState) =>
     display("flex"),
     justifyContent("justify-center"),
     animation({ "animate-pulse": state === "LOADING" }),
+    opacity({ "opacity-50": isFaded }),
   );
 
 const stylesText = (isCircled: boolean) =>
@@ -58,9 +61,9 @@ const stylesText = (isCircled: boolean) =>
     height("h-8"),
   );
 
-export const CalendarGridItem: React.FC<Props> = ({ date, state, isToday }) => {
+export const CalendarGridItem: React.FC<Props> = ({ date, state, isToday, isFaded }) => {
   return (
-    <div className={stylesDiv(state)}>
+    <div className={stylesDiv(state, isFaded)}>
       <div className={stylesText(isToday)}>{date.format("DD")}</div>
     </div>
   );
