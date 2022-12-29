@@ -6,9 +6,9 @@ type LayoutProps = {};
 
 export const Layout = ({ children }: React.PropsWithChildren<LayoutProps>) => {
   return (
-    <>
+    <div className="max-w-[600px] mx-auto">
       <Navbar />
       {children}
-    </>
+    </div>
   );
 };
