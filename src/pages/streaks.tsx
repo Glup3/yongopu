@@ -22,6 +22,7 @@ const StreaksPage: NextPage = () => {
     { streakId: streakId || "" },
     { enabled: !!streakId, refetchOnReconnect: false, refetchOnWindowFocus: false },
   );
+  const toggleStreakEventMutation = trpc.streak.toggleStreakEvent.useMutation();
 
   const handleNextMonth = () => setSelectedDate((date) => dayjs(date).add(1, "months").toDate());
   const handlePrevMonth = () =>
@@ -29,6 +30,17 @@ const StreaksPage: NextPage = () => {
   const handleNextYear = () => setSelectedDate((date) => dayjs(date).add(1, "years").toDate());
   const handlePrevYear = () => setSelectedDate((date) => dayjs(date).subtract(1, "years").toDate());
   const handleSelectedToday = () => setSelectedDate(new Date());
+
+  const toggleStreakEvent = (eventDate: dayjs.Dayjs, eventId?: string) => {
+    if (streakId) {
+      const dateUTC = new Date(Date.UTC(eventDate.year(), eventDate.month(), eventDate.date()));
+      toggleStreakEventMutation.mutate({
+        streakId: streakId,
+        eventDate: dateUTC,
+        streakEventId: eventId,
+      });
+    }
+  };
 
   return (
     <>
@@ -56,6 +68,7 @@ const StreaksPage: NextPage = () => {
           onPrevYear={handlePrevYear}
           onSelectedToday={handleSelectedToday}
           events={streaks?.get(streakId || "")?.events}
+          onToggleStreakEvent={toggleStreakEvent}
         />
         {streakStats && <StreakStats {...streakStats} />}
       </main>

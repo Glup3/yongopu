@@ -44,6 +44,7 @@ type CalendarProps = {
   onNextYear: () => void;
   onPrevYear: () => void;
   onSelectedToday: () => void;
+  onToggleStreakEvent: (eventDate: dayjs.Dayjs, eventId?: string) => void;
   events: StreakEvent[] | undefined;
 };
 
@@ -55,6 +56,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   onNextYear,
   onPrevYear,
   onSelectedToday,
+  onToggleStreakEvent,
   events,
 }) => {
   const gridItems: dayjs.Dayjs[] = [];
@@ -80,15 +82,26 @@ export const Calendar: React.FC<CalendarProps> = ({
       />
       <CalendarDaysHeader />
       <div className="grid grid-cols-7 gap-[2px] text-center bg-slate-100">
-        {gridItems.map((date) => (
-          <CalendarGridItem
-            key={date.toISOString()}
-            date={date}
-            isToday={date.isSame(today, "day")}
-            isFaded={!date.isSame(selectedDate, "month")}
-            state={getCalendarItemState(events, date, today, dayjs(startDate))}
-          />
-        ))}
+        {gridItems.map((date) => {
+          const streakEventId = events?.find((e) => date.isSame(dayjs(e.date), "days"));
+          const eventState = getCalendarItemState(events, date, today, dayjs(startDate));
+
+          return (
+            <CalendarGridItem
+              itemId={streakEventId?.id}
+              key={streakEventId?.id || date.toISOString()}
+              date={date}
+              isToday={date.isSame(today, "day")}
+              isFaded={!date.isSame(selectedDate, "month")}
+              state={eventState}
+              onToggleStreakEvent={
+                (["DEFEATED", "SUCCEEDED"] as GridItemState[]).includes(eventState)
+                  ? onToggleStreakEvent
+                  : undefined
+              }
+            />
+          );
+        })}
       </div>
     </div>
   );

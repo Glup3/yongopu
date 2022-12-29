@@ -20,10 +20,12 @@ import {
 export type GridItemState = "NORMAL" | "DEFEATED" | "SUCCEEDED" | "STARTED" | "LOADING";
 
 type Props = {
+  itemId: string | undefined;
   date: Dayjs;
   state: GridItemState;
   isToday: boolean;
   isFaded: boolean;
+  onToggleStreakEvent?: (eventDate: Dayjs, eventId?: string) => void;
 };
 
 const stylesDiv = (state: GridItemState, isFaded: boolean) =>
@@ -56,9 +58,20 @@ const stylesText = (isCircled: boolean) =>
     height("h-10"),
   );
 
-export const CalendarGridItem: React.FC<Props> = ({ date, state, isToday, isFaded }) => {
+export const CalendarGridItem: React.FC<Props> = ({
+  itemId,
+  date,
+  state,
+  isToday,
+  isFaded,
+  onToggleStreakEvent,
+}) => {
+  const handleItemClick = () => {
+    onToggleStreakEvent?.(date, itemId);
+  };
+
   return (
-    <div className={stylesDiv(state, isFaded)}>
+    <div className={stylesDiv(state, isFaded)} onClick={handleItemClick}>
       <div className={stylesText(isToday)}>{date.format("DD")}</div>
     </div>
   );

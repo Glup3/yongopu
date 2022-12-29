@@ -58,4 +58,25 @@ export const streakRouter = router({
         currentStreak,
       };
     }),
+  toggleStreakEvent: protectedProcedure
+    .input(
+      z.object({
+        streakEventId: z.string().optional(),
+        eventDate: z.date(),
+        streakId: z.string(),
+      }),
+    )
+    .mutation(({ input, ctx }) => {
+      if (typeof input.streakEventId !== "undefined") {
+        return ctx.prisma.streakEvent.delete({
+          where: {
+            id: input.streakEventId,
+          },
+        });
+      }
+
+      return ctx.prisma.streakEvent.create({
+        data: { streakId: input.streakId, eventType: "DEFEAT", date: input.eventDate },
+      });
+    }),
 });
