@@ -7,10 +7,6 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-  const { data } = trpc.streak.getStreaks.useQuery(undefined, {
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-  });
 
   return (
     <>
@@ -53,20 +49,6 @@ const Home: NextPage = () => {
             </p>
             <AuthShowcase />
           </div>
-          <ul>
-            {!data ? (
-              <span>loading...</span>
-            ) : (
-              data.map((streak) => (
-                <li key={streak.id}>
-                  <span>{streak.title} | </span>
-                  <span>{streak.percentage?.toFixed(2) || "NaN"}% | </span>
-                  <span>{streak.currentStreak} days | </span>
-                  <span>{streak.longestStreak} days</span>
-                </li>
-              ))
-            )}
-          </ul>
         </div>
       </main>
     </>

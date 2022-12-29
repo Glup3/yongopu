@@ -40,6 +40,16 @@ const calculateStreaks = (allStreakEvents: StreakEvent[]) => {
   return streaks;
 };
 
+export const calculateCurrentStreak = (streakFrom: StreakEvent, streakTill: Date): StreakFromTo => {
+  const from = dayjs(streakFrom.date);
+  const to = dayjs(streakTill);
+  return {
+    from: from,
+    to: to,
+    streak: to.diff(from, "days"),
+  };
+};
+
 export const calculateLongestStreak = (allStreakEvents: StreakEvent[]) => {
   return calculateStreaks(allStreakEvents).reduce((max, streak) =>
     max.streak > streak.streak ? max : streak,

@@ -8,6 +8,7 @@ type Props = {
   longestStreak: StreakFromTo;
   shortestStreak: StreakFromTo;
   streakSuccessPercentage: number;
+  currentStreak: StreakFromTo;
 };
 
 export const StreakStats: React.FC<Props> = ({
@@ -16,12 +17,14 @@ export const StreakStats: React.FC<Props> = ({
   longestStreak,
   shortestStreak,
   streakSuccessPercentage,
+  currentStreak,
 }) => {
   return (
     <div className="flex flex-col">
       <div>Start: {streakStart?.date.toISOString()}</div>
       <div>Defeats: {streakDefeats}</div>
       <div>Success: {streakSuccessPercentage}%</div>
+      <div>Current: {currentStreak.streak}</div>
       <div>Longest: {longestStreak.streak}</div>
       <div>Shortest: {shortestStreak.streak}</div>
     </div>
