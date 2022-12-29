@@ -18,7 +18,6 @@ export const streakRouter = router({
       select: {
         id: true,
         title: true,
-        events: true,
       },
       orderBy: {
         title: "asc",
@@ -27,6 +26,13 @@ export const streakRouter = router({
 
     return new Map<string, typeof streaks[0]>(streaks.map((streak) => [streak.id, streak]));
   }),
+  getStreakEvents: protectedProcedure
+    .input(z.object({ streakId: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.streakEvent.findMany({
+        where: { streakId: input.streakId },
+      });
+    }),
   calculateStreakStats: protectedProcedure
     .input(z.object({ streakId: z.string() }))
     .query(async ({ input, ctx }) => {
@@ -66,13 +72,14 @@ export const streakRouter = router({
         streakId: z.string(),
       }),
     )
-    .mutation(({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
       if (typeof input.streakEventId !== "undefined") {
-        return ctx.prisma.streakEvent.delete({
+        await ctx.prisma.streakEvent.deleteMany({
           where: {
             id: input.streakEventId,
           },
         });
+        return;
       }
 
       return ctx.prisma.streakEvent.create({
