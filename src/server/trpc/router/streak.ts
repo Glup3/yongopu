@@ -74,7 +74,7 @@ export const streakRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       if (typeof input.streakEventId !== "undefined") {
-        await ctx.prisma.streakEvent.deleteMany({
+        await ctx.prisma.streakEvent.delete({
           where: {
             id: input.streakEventId,
           },

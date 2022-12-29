@@ -31,8 +31,10 @@ const StreaksPage: NextPage = () => {
 
   const toggleStreakEventMutation = trpc.streak.toggleStreakEvent.useMutation({
     onMutate: async (variables) => {
-      await utils.streak.getStreakEvents.cancel();
-      await utils.streak.calculateStreakStats.cancel();
+      await Promise.all([
+        utils.streak.getStreakEvents.cancel(),
+        utils.streak.calculateStreakStats.cancel(),
+      ]);
 
       const prevStreakEvents = utils.streak.getStreakEvents.getData({
         streakId: variables.streakId,
@@ -70,11 +72,11 @@ const StreaksPage: NextPage = () => {
         );
       }
     },
-    onSettled: (streakEvent) => {
-      if (streakEvent?.streakId) {
-        utils.streak.getStreakEvents.invalidate({ streakId: streakEvent.streakId });
-        utils.streak.calculateStreakStats.invalidate({ streakId: streakEvent.streakId });
-      }
+    onSettled: async (_, __, variables) => {
+      await Promise.all([
+        utils.streak.getStreakEvents.invalidate({ streakId: variables.streakId }),
+        utils.streak.calculateStreakStats.invalidate({ streakId: variables.streakId }),
+      ]);
     },
   });
 
