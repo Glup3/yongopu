@@ -38,6 +38,11 @@ const seed = async (req: NextApiRequest, res: NextApiResponse) => {
         title: "Anime",
         userId: session.user.id,
       },
+      {
+        id: `${session.user.id}-streak4`,
+        title: "This is a super long text and should is just a test",
+        userId: session.user.id,
+      },
     ],
   });
   await prisma.streakEvent.createMany({
@@ -76,6 +81,12 @@ const seed = async (req: NextApiRequest, res: NextApiResponse) => {
         id: `${session.user.id}-streak3-e1`,
         streakId: `${session.user.id}-streak3`,
         date: dayjs().subtract(231, "days").toDate(),
+        eventType: "START",
+      },
+      {
+        id: `${session.user.id}-streak4-e1`,
+        streakId: `${session.user.id}-streak4`,
+        date: dayjs().subtract(55, "days").toDate(),
         eventType: "START",
       },
     ],

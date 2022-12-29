@@ -22,13 +22,17 @@ export const StreakSelector: React.FC<Props> = ({
         onChange={onStreakChange}
         value={selectedStreakId}
         disabled={!selectedStreakId}
+        className="w-full p-1 text-lg font-semibold border-solid border-2 rounded-md"
       >
-        {streaks &&
+        {streaks ? (
           streaks.map((streak) => (
             <option key={streak.id} value={streak.id}>
               {streak.title}
             </option>
-          ))}
+          ))
+        ) : (
+          <option>Loading...</option>
+        )}
       </select>
     </label>
   );

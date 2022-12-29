@@ -101,7 +101,20 @@ const StreaksPage: NextPage = () => {
   return (
     <>
       <main className="container mx-auto">
-        <div className="mb-6">
+        <div className="mt-4">
+          <Calendar
+            selectedMonth={selectedDate.getMonth()}
+            selectedYear={selectedDate.getFullYear()}
+            onNextMonth={handleNextMonth}
+            onPrevMonth={handlePrevMonth}
+            onNextYear={handleNextYear}
+            onPrevYear={handlePrevYear}
+            onSelectedToday={handleSelectedToday}
+            events={streakEvents}
+            onToggleStreakEvent={toggleStreakEvent}
+          />
+        </div>
+        <div className="my-4">
           <StreakSelector
             selectedStreakId={streakId}
             setSelectedStreakId={setStreakId}
@@ -115,17 +128,6 @@ const StreaksPage: NextPage = () => {
             }
           />
         </div>
-        <Calendar
-          selectedMonth={selectedDate.getMonth()}
-          selectedYear={selectedDate.getFullYear()}
-          onNextMonth={handleNextMonth}
-          onPrevMonth={handlePrevMonth}
-          onNextYear={handleNextYear}
-          onPrevYear={handlePrevYear}
-          onSelectedToday={handleSelectedToday}
-          events={streakEvents}
-          onToggleStreakEvent={toggleStreakEvent}
-        />
         {streakStats && <StreakStats {...streakStats} />}
       </main>
     </>
