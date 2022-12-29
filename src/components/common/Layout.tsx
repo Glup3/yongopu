@@ -1,5 +1,5 @@
 import React from "react";
-import { NavBar } from "./NavBar";
+import { Navbar } from "./Navbar";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type LayoutProps = {};
@@ -7,7 +7,7 @@ type LayoutProps = {};
 export const Layout = ({ children }: React.PropsWithChildren<LayoutProps>) => {
   return (
     <>
-      <NavBar />
+      <Navbar />
       {children}
     </>
   );
