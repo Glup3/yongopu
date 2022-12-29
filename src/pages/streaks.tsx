@@ -4,19 +4,24 @@ import { useState } from "react";
 
 import { Calendar } from "../components/Calendar/Calendar";
 import { StreakSelector } from "../components/Streak/StreakSelector";
+import { StreakStats } from "../components/Streak/StreakStats";
 
 import { trpc } from "../utils/trpc";
 
 const StreaksPage: NextPage = () => {
   const [streakId, setStreakId] = useState<string | undefined>();
-  const { data } = trpc.streak.getUserStreaks.useQuery(undefined, {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const { data: streaks } = trpc.streak.getUserStreaks.useQuery(undefined, {
     onSuccess: (streaksMap) => {
       setStreakId(streaksMap.keys().next().value);
     },
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const { data: streakStats } = trpc.streak.calculateStreakStats.useQuery(
+    { streakId: streakId || "" },
+    { enabled: !!streakId, refetchOnReconnect: false, refetchOnWindowFocus: false },
+  );
 
   const handleNextMonth = () => setSelectedDate((date) => dayjs(date).add(1, "months").toDate());
   const handlePrevMonth = () =>
@@ -33,8 +38,8 @@ const StreaksPage: NextPage = () => {
             selectedStreakId={streakId}
             setSelectedStreakId={setStreakId}
             streaks={
-              data
-                ? Array.from(data, ([key, value]) => ({
+              streaks
+                ? Array.from(streaks, ([key, value]) => ({
                     id: key,
                     title: value.title,
                   }))
@@ -50,8 +55,9 @@ const StreaksPage: NextPage = () => {
           onNextYear={handleNextYear}
           onPrevYear={handlePrevYear}
           onSelectedToday={handleSelectedToday}
-          events={data?.get(streakId || "")?.events}
+          events={streaks?.get(streakId || "")?.events}
         />
+        {streakStats && <StreakStats {...streakStats} />}
       </main>
     </>
   );
