@@ -1,5 +1,6 @@
 import React from "react";
 import dayjs from "dayjs";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { CalendarGridItem, type GridItemState } from "./CalendarGridItem";
 import { CalendarDaysHeader } from "./CalendarDaysHeader";
 import { CalendarHeader } from "./CalendarHeader";
@@ -59,6 +60,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   onToggleStreakEvent,
   events,
 }) => {
+  const [parent] = useAutoAnimate<HTMLDivElement>();
   const gridItems: dayjs.Dayjs[] = [];
   const selectedDate = dayjs(new Date(selectedYear, selectedMonth, 1));
   const firstDay = dayjs(selectedDate).startOf("month");
@@ -81,7 +83,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         onSelectedToday={onSelectedToday}
       />
       <CalendarDaysHeader />
-      <div className="grid grid-cols-7 gap-[2px] text-center bg-slate-100">
+      <div ref={parent} className="grid grid-cols-7 gap-[2px] text-center bg-slate-100">
         {gridItems.map((date) => {
           const streakEventId = events?.find((e) => date.isSame(dayjs(e.date), "days"));
           const eventState = getCalendarItemState(events, date, today, dayjs(startDate));
