@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { type StreakEvent } from "@prisma/client";
 import {
-  calculateCurrentStreak,
+  calculateStreakDuration,
   calculateLongestStreak,
   calculateShortestStreak,
   calculateStreakSuccessPercentage,
@@ -48,12 +48,16 @@ export const streakRouter = router({
       };
       const streakStart = allStreakEvents.find((streak) => streak.eventType === "START");
       const streakDefeats = allStreakEvents.filter((streak) => streak.eventType === "DEFEAT");
-      const currentStreak = calculateCurrentStreak(latestStreakEvent, new Date());
+      const currentStreak = calculateStreakDuration(latestStreakEvent, new Date());
       const longestStreak = calculateLongestStreak(allStreakEvents);
       const shortestStreak = calculateShortestStreak(allStreakEvents);
       const streakSuccessPercentage = streakStart
         ? calculateStreakSuccessPercentage(streakStart, new Date(), streakDefeats.length)
         : NaN;
+      const totalDays = streakStart
+        ? calculateStreakDuration(streakStart, new Date()).streak
+        : undefined;
+      const streakTotalSuccess = totalDays ? totalDays - streakDefeats.length : NaN;
 
       return {
         streakStart,
@@ -62,6 +66,8 @@ export const streakRouter = router({
         shortestStreak,
         streakSuccessPercentage,
         currentStreak,
+        totalDays,
+        streakTotalSuccess,
       };
     }),
   toggleStreakEvent: protectedProcedure

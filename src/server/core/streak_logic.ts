@@ -40,7 +40,10 @@ const calculateStreaks = (allStreakEvents: StreakEvent[]) => {
   return streaks;
 };
 
-export const calculateCurrentStreak = (streakFrom: StreakEvent, streakTill: Date): StreakFromTo => {
+export const calculateStreakDuration = (
+  streakFrom: StreakEvent,
+  streakTill: Date,
+): StreakFromTo => {
   const from = dayjs(streakFrom.date);
   const to = dayjs(streakTill);
   return {
