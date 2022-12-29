@@ -24,6 +24,11 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.SPOTIFY_CLIENT_SECRET,
     }),
   ],
+  theme: {
+    colorScheme: "light",
+    logo: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/25.png",
+    // buttonText: "#4ade80",
+  },
 };
 
 export default NextAuth(authOptions);
