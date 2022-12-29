@@ -25,6 +25,8 @@ model StreakEvent {
   eventType StreakEventType
   streakId  String
   streak    Streak          @relation(fields: [streakId], references: [id], onDelete: Cascade)
+
+  @@unique([date, streakId])
 }
 
 model Streak {
