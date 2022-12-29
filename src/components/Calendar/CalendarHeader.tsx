@@ -20,12 +20,14 @@ export const CalendarHeader: React.FC<Props> = ({
   onSelectedToday,
 }) => {
   return (
-    <div className="flex justify-between mb-2 px-4">
+    <div className="flex justify-between mb-2 px-4 items-center">
       <div className="flex">
         <ChevronsLeft onClick={onPrevYear} className="mr-2" />
         <ChevronLeft onClick={onPrevMonth} />
       </div>
-      <div onClick={onSelectedToday}>{selectedDate.format("MMMM YYYY")}</div>
+      <div className="font-semibold text-2xl" onClick={onSelectedToday}>
+        {selectedDate.format("MMMM YYYY")}
+      </div>
       <div>
         <div className="flex">
           <ChevronRight onClick={onNextMonth} />

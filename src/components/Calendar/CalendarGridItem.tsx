@@ -4,10 +4,6 @@ import {
   classnames,
   backgroundColor,
   borderRadius,
-  borderWidth,
-  borderStyle,
-  borderColor,
-  padding,
   aspectRatio,
   display,
   flexDirection,
@@ -17,6 +13,7 @@ import {
   alignItems,
   animation,
   opacity,
+  fontWeight,
   // type TFontSize,
 } from "tailwindcss-classnames";
 
@@ -48,17 +45,15 @@ const stylesDiv = (state: GridItemState, isFaded: boolean) =>
 
 const stylesText = (isCircled: boolean) =>
   classnames(
-    borderWidth("border-2"),
     borderRadius("rounded-full"),
-    borderStyle({ "border-solid": isCircled, "border-none": !isCircled }),
-    borderColor("border-blue-800"),
+    backgroundColor({ "bg-gray-300": isCircled }),
     display("flex"),
-    padding("p-1"),
     flexDirection("flex-col"),
     justifyContent("justify-center"),
     // fontSize("text-[100%]" as TFontSize),
-    width("w-8"),
-    height("h-8"),
+    fontWeight("font-medium"),
+    width("w-10"),
+    height("h-10"),
   );
 
 export const CalendarGridItem: React.FC<Props> = ({ date, state, isToday, isFaded }) => {
