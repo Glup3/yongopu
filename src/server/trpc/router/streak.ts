@@ -1,5 +1,5 @@
+import dayjs from "dayjs";
 import { z } from "zod";
-import { type StreakEvent } from "@prisma/client";
 import {
   calculateStreakDuration,
   calculateLongestStreak,
@@ -18,6 +18,8 @@ export const streakRouter = router({
       select: {
         id: true,
         title: true,
+        startDate: true,
+        endDate: true,
       },
       orderBy: {
         title: "asc",
@@ -36,31 +38,36 @@ export const streakRouter = router({
   calculateStreakStats: protectedProcedure
     .input(z.object({ streakId: z.string() }))
     .query(async ({ input, ctx }) => {
-      const allStreakEvents = await ctx.prisma.streakEvent.findMany({
-        where: { streakId: input.streakId },
-        orderBy: { date: "asc" },
+      const streakWithEvents = await ctx.prisma.streak.findFirstOrThrow({
+        where: { id: input.streakId },
+        select: {
+          startDate: true,
+          endDate: true,
+          events: {
+            where: { eventType: "DEFEAT" },
+            orderBy: { date: "asc" },
+          },
+        },
       });
-      const latestStreakEvent: StreakEvent = allStreakEvents.at(-1) || {
-        id: "",
-        streakId: "",
-        date: new Date(),
-        eventType: "DEFEAT",
-      };
-      const streakStart = allStreakEvents.find((streak) => streak.eventType === "START");
-      const streakDefeats = allStreakEvents.filter((streak) => streak.eventType === "DEFEAT");
-      const currentStreak = calculateStreakDuration(latestStreakEvent, new Date());
-      const longestStreak = calculateLongestStreak(allStreakEvents);
-      const shortestStreak = calculateShortestStreak(allStreakEvents);
-      const streakSuccessPercentage = streakStart
-        ? calculateStreakSuccessPercentage(streakStart, new Date(), streakDefeats.length)
+
+      const streakStartDate = streakWithEvents.startDate;
+      const streakEndDate = streakWithEvents.endDate || dayjs().subtract(1, "days").toDate();
+      const streakDefeats = streakWithEvents.events.map((s) => s.date);
+      const latestStreakEventDate = streakDefeats.at(-1) || streakStartDate;
+      const currentStreak = calculateStreakDuration(latestStreakEventDate, streakEndDate);
+      const longestStreak = calculateLongestStreak(streakStartDate, streakEndDate, streakDefeats);
+      const shortestStreak = calculateShortestStreak(streakStartDate, streakEndDate, streakDefeats);
+      const streakSuccessPercentage = streakStartDate
+        ? calculateStreakSuccessPercentage(streakStartDate, streakEndDate, streakDefeats.length)
         : NaN;
-      const totalDays = streakStart
-        ? calculateStreakDuration(streakStart, new Date()).streak
+      const totalDays = streakStartDate
+        ? calculateStreakDuration(streakStartDate, streakEndDate).streak
         : undefined;
       const streakTotalSuccess = totalDays ? totalDays - streakDefeats.length : NaN;
 
       return {
-        streakStart,
+        streakStartDate,
+        streakEndDate: streakWithEvents.endDate,
         streakDefeats: streakDefeats.length,
         longestStreak,
         shortestStreak,

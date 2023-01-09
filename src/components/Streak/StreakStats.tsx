@@ -1,11 +1,11 @@
 import React from "react";
-import { type StreakEvent } from "@prisma/client";
 import { type StreakFromTo } from "../../types/streak-from-to";
 import { StreakStatsColumn } from "./StreakStatsColumn";
 import dayjs from "dayjs";
 
 type Props = {
-  streakStart: StreakEvent | undefined;
+  streakStartDate: Date;
+  streakEndDate: Date | null;
   streakDefeats: number;
   longestStreak: StreakFromTo;
   shortestStreak: StreakFromTo;
@@ -16,7 +16,8 @@ type Props = {
 };
 
 export const StreakStats: React.FC<Props> = ({
-  streakStart,
+  streakStartDate,
+  streakEndDate,
   streakDefeats,
   longestStreak,
   shortestStreak,
@@ -25,11 +26,12 @@ export const StreakStats: React.FC<Props> = ({
   totalDays,
   streakTotalSuccess,
 }) => {
-  const startDate = streakStart?.date || new Date();
-
   return (
     <div className="flex flex-col mt-4">
-      <StreakStatsColumn text="Current Streak" value={currentStreak.streak.toString()} />
+      <StreakStatsColumn
+        text={streakEndDate ? "Last Streak" : "Current Streak"}
+        value={currentStreak.streak.toString()}
+      />
       <StreakStatsColumn
         text="Success Percentage"
         value={`${streakSuccessPercentage.toFixed(2)}%`}
@@ -39,7 +41,10 @@ export const StreakStats: React.FC<Props> = ({
       <StreakStatsColumn text="Total Defeats" value={streakDefeats.toString()} />
       <StreakStatsColumn text="Longest Streak" value={longestStreak.streak.toString()} />
       <StreakStatsColumn text="Shortest Streak" value={shortestStreak.streak.toString()} />
-      <StreakStatsColumn text="Start Date" value={dayjs(startDate).format("DD.MM.YYYY")} />
+      <StreakStatsColumn text="Start Date" value={dayjs(streakStartDate).format("DD.MM.YYYY")} />
+      {streakEndDate && (
+        <StreakStatsColumn text="End Date" value={dayjs(streakEndDate).format("DD.MM.YYYY")} />
+      )}
     </div>
   );
 };

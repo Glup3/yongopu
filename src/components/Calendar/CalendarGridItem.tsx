@@ -17,7 +17,7 @@ import {
   // type TFontSize,
 } from "tailwindcss-classnames";
 
-export type GridItemState = "NORMAL" | "DEFEATED" | "SUCCEEDED" | "STARTED" | "LOADING";
+export type GridItemState = "NORMAL" | "DEFEATED" | "SUCCEEDED" | "STARTED" | "ENDED" | "LOADING";
 
 type Props = {
   itemId: string | undefined;
@@ -36,6 +36,7 @@ const stylesDiv = (state: GridItemState, isFaded: boolean) =>
       "bg-red-400": state === "DEFEATED",
       "bg-sky-400": state === "STARTED",
       "bg-gray-200": state === "LOADING",
+      "bg-orange-400": state === "ENDED",
     }),
     aspectRatio("aspect-square"),
     alignItems("items-center"),

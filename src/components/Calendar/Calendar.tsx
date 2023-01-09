@@ -12,21 +12,28 @@ const getCalendarItemState = (
   events: StreakEvent[] | undefined,
   date: dayjs.Dayjs,
   today: dayjs.Dayjs,
-  started: dayjs.Dayjs,
+  startDate: dayjs.Dayjs,
+  endDate: dayjs.Dayjs | undefined,
 ): GridItemState => {
   if (typeof events === "undefined") {
     return "LOADING";
+  }
+
+  if (endDate && date.isSame(endDate, "days")) {
+    return "ENDED";
+  } else if (endDate && date.isAfter(endDate, "days")) {
+    return "NORMAL";
   }
 
   if (date.isAfter(today.subtract(1, "days"), "days")) {
     return "NORMAL";
   }
 
-  if (date.isBefore(started, "days")) {
+  if (date.isBefore(startDate, "days")) {
     return "NORMAL";
   }
 
-  if (date.isSame(started, "days")) {
+  if (date.isSame(startDate, "days")) {
     return "STARTED";
   }
 
@@ -47,6 +54,8 @@ type CalendarProps = {
   onSelectedToday: () => void;
   onToggleStreakEvent: (eventDate: dayjs.Dayjs, eventId?: string) => void;
   events: StreakEvent[] | undefined;
+  streakStartDate: Date | undefined;
+  streakEndDate: Date | null | undefined;
 };
 
 export const Calendar: React.FC<CalendarProps> = ({
@@ -59,19 +68,16 @@ export const Calendar: React.FC<CalendarProps> = ({
   onSelectedToday,
   onToggleStreakEvent,
   events,
+  streakStartDate,
+  streakEndDate,
 }) => {
   const [parent] = useAutoAnimate<HTMLDivElement>();
-  const gridItems: dayjs.Dayjs[] = [];
   const selectedDate = dayjs(new Date(selectedYear, selectedMonth, 1));
   const firstDay = dayjs(selectedDate).startOf("month");
   const fillerDaysStart = firstDay.get("day") - 1;
   const firstFillerDay = firstDay.subtract(fillerDaysStart, "days");
   const today = dayjs();
-  const startDate = events?.find((e) => e.eventType === "START")?.date;
 
-  for (let i = 0; i < gridItemSize; i++) {
-    gridItems.push(firstFillerDay.add(i, "days"));
-  }
   return (
     <div className="max-w-[600px] m-1">
       <CalendarHeader
@@ -84,23 +90,31 @@ export const Calendar: React.FC<CalendarProps> = ({
       />
       <CalendarDaysHeader />
       <div ref={parent} className="grid grid-cols-7 gap-[2px] text-center bg-slate-100">
-        {gridItems.map((date) => {
-          const streakEventId = events?.find((e) => date.isSame(dayjs(e.date), "days"));
-          const eventState = getCalendarItemState(events, date, today, dayjs(startDate));
+        {[...Array(gridItemSize).keys()].map((item) => {
+          const itemDate = firstFillerDay.add(item, "days");
+          const itemStreakEventId = events?.find((e) => itemDate.isSame(dayjs(e.date), "days"))?.id;
+          const itemEventType = getCalendarItemState(
+            events,
+            itemDate,
+            today,
+            dayjs(streakStartDate),
+            streakEndDate ? dayjs(streakEndDate) : undefined,
+          );
+          const isDateToday = itemDate.isSame(today, "day");
+          const isDateFromThisMonth = itemDate.isSame(selectedDate, "month");
+          const canEventBeToggled = (["DEFEATED", "SUCCEEDED"] as GridItemState[]).includes(
+            itemEventType,
+          );
 
           return (
             <CalendarGridItem
-              itemId={streakEventId?.id}
-              key={streakEventId?.id || date.toISOString()}
-              date={date}
-              isToday={date.isSame(today, "day")}
-              isFaded={!date.isSame(selectedDate, "month")}
-              state={eventState}
-              onToggleStreakEvent={
-                (["DEFEATED", "SUCCEEDED"] as GridItemState[]).includes(eventState)
-                  ? onToggleStreakEvent
-                  : undefined
-              }
+              key={itemStreakEventId || itemDate.toISOString()}
+              itemId={itemStreakEventId}
+              date={itemDate}
+              isFaded={!isDateFromThisMonth}
+              isToday={isDateToday}
+              state={itemEventType}
+              onToggleStreakEvent={canEventBeToggled ? onToggleStreakEvent : undefined}
             />
           );
         })}

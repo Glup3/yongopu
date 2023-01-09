@@ -15,8 +15,8 @@ datasource db {
 }
 
 enum StreakEventType {
-  START
   DEFEAT
+  RESTDAY
 }
 
 model StreakEvent {
@@ -33,6 +33,8 @@ model Streak {
   id          String        @id @default(cuid())
   title       String
   description String?
+  startDate   DateTime      @db.Date
+  endDate     DateTime?     @db.Date
   userId      String
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   events      StreakEvent[]

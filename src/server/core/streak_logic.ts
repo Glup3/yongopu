@@ -1,10 +1,9 @@
 import dayjs from "dayjs";
-import { type StreakEvent } from "@prisma/client";
 import { type StreakFromTo } from "../../types/streak-from-to";
 
-const compareStreakEventDate = (s1: StreakEvent, s2: StreakEvent): number => {
-  const d1 = dayjs(s1.date);
-  const d2 = dayjs(s2.date);
+const compareDateDay = (date1: Date, date2: Date): number => {
+  const d1 = dayjs(date1);
+  const d2 = dayjs(date2);
 
   if (d1.isSame(d2, "day")) {
     return 0;
@@ -17,19 +16,14 @@ const compareStreakEventDate = (s1: StreakEvent, s2: StreakEvent): number => {
   return 1;
 };
 
-const calculateStreaks = (allStreakEvents: StreakEvent[]) => {
+const calculateStreaks = (streakStart: Date, streakEnd: Date, streakDefeats: Date[]) => {
   const streaks: StreakFromTo[] = [];
-  const eventsTillToday = allStreakEvents.concat({
-    id: "",
-    streakId: "",
-    date: new Date(),
-    eventType: "DEFEAT",
-  });
+  const allEvents: Date[] = [streakStart, ...streakDefeats, streakEnd];
 
-  eventsTillToday.sort(compareStreakEventDate);
-  for (let i = 0; i < eventsTillToday.length - 1; i++) {
-    const from = dayjs(eventsTillToday[i]?.date);
-    const to = dayjs(eventsTillToday[i + 1]?.date);
+  allEvents.sort(compareDateDay);
+  for (let i = 0; i < allEvents.length - 1; i++) {
+    const from = dayjs(allEvents[i]);
+    const to = dayjs(allEvents[i + 1]);
     streaks.push({
       from: from,
       to: to,
@@ -40,11 +34,8 @@ const calculateStreaks = (allStreakEvents: StreakEvent[]) => {
   return streaks;
 };
 
-export const calculateStreakDuration = (
-  streakFrom: StreakEvent,
-  streakTill: Date,
-): StreakFromTo => {
-  const from = dayjs(streakFrom.date);
+export const calculateStreakDuration = (streakFrom: Date, streakTill: Date): StreakFromTo => {
+  const from = dayjs(streakFrom);
   const to = dayjs(streakTill);
   return {
     from: from,
@@ -53,23 +44,31 @@ export const calculateStreakDuration = (
   };
 };
 
-export const calculateLongestStreak = (allStreakEvents: StreakEvent[]) => {
-  return calculateStreaks(allStreakEvents).reduce((max, streak) =>
+export const calculateLongestStreak = (
+  streakStart: Date,
+  streakEnd: Date,
+  streakDefeats: Date[],
+) => {
+  return calculateStreaks(streakStart, streakEnd, streakDefeats).reduce((max, streak) =>
     max.streak > streak.streak ? max : streak,
   );
 };
 
-export const calculateShortestStreak = (allStreakEvents: StreakEvent[]) => {
-  return calculateStreaks(allStreakEvents).reduce((min, streak) =>
+export const calculateShortestStreak = (
+  streakStart: Date,
+  streakEnd: Date,
+  streakDefeats: Date[],
+) => {
+  return calculateStreaks(streakStart, streakEnd, streakDefeats).reduce((min, streak) =>
     min.streak < streak.streak ? min : streak,
   );
 };
 
 export const calculateStreakSuccessPercentage = (
-  streakStart: StreakEvent,
+  streakStart: Date,
   streakTill: Date,
   streakDefeats: number,
 ): number => {
-  const streakLength = dayjs(streakTill).diff(streakStart.date, "days");
+  const streakLength = dayjs(streakTill).diff(streakStart, "days");
   return 100 - (streakDefeats / streakLength) * 100;
 };

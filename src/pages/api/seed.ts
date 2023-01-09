@@ -27,21 +27,32 @@ const seed = async (req: NextApiRequest, res: NextApiResponse) => {
         id: `${session.user.id}-streak1`,
         title: "Exercising",
         userId: session.user.id,
+        startDate: dayjs().subtract(30, "days").toDate(),
       },
       {
         id: `${session.user.id}-streak2`,
         title: "Sleeping",
         userId: session.user.id,
+        startDate: dayjs().subtract(46, "days").toDate(),
       },
       {
         id: `${session.user.id}-streak3`,
         title: "Anime",
         userId: session.user.id,
+        startDate: dayjs().subtract(231, "days").toDate(),
       },
       {
         id: `${session.user.id}-streak4`,
         title: "This is a super long text and should is just a test",
         userId: session.user.id,
+        startDate: dayjs().subtract(55, "days").toDate(),
+      },
+      {
+        id: `${session.user.id}-streak5`,
+        title: "Green Garden",
+        userId: session.user.id,
+        startDate: dayjs().subtract(15, "days").toDate(),
+        endDate: dayjs().subtract(5, "days").toDate(),
       },
     ],
   });
@@ -50,17 +61,11 @@ const seed = async (req: NextApiRequest, res: NextApiResponse) => {
       {
         id: `${session.user.id}-streak1-e1`,
         streakId: `${session.user.id}-streak1`,
-        date: dayjs().subtract(30, "days").toDate(),
-        eventType: "START",
-      },
-      {
-        id: `${session.user.id}-streak1-e2`,
-        streakId: `${session.user.id}-streak1`,
         date: dayjs().subtract(20, "days").toDate(),
         eventType: "DEFEAT",
       },
       {
-        id: `${session.user.id}-streak1-e3`,
+        id: `${session.user.id}-streak1-e2`,
         streakId: `${session.user.id}-streak1`,
         date: dayjs().subtract(10, "days").toDate(),
         eventType: "DEFEAT",
@@ -68,26 +73,8 @@ const seed = async (req: NextApiRequest, res: NextApiResponse) => {
       {
         id: `${session.user.id}-streak2-e1`,
         streakId: `${session.user.id}-streak2`,
-        date: dayjs().subtract(46, "days").toDate(),
-        eventType: "START",
-      },
-      {
-        id: `${session.user.id}-streak2-e2`,
-        streakId: `${session.user.id}-streak2`,
         date: dayjs().subtract(12, "days").toDate(),
         eventType: "DEFEAT",
-      },
-      {
-        id: `${session.user.id}-streak3-e1`,
-        streakId: `${session.user.id}-streak3`,
-        date: dayjs().subtract(231, "days").toDate(),
-        eventType: "START",
-      },
-      {
-        id: `${session.user.id}-streak4-e1`,
-        streakId: `${session.user.id}-streak4`,
-        date: dayjs().subtract(55, "days").toDate(),
-        eventType: "START",
       },
     ],
   });

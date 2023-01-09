@@ -112,6 +112,8 @@ const StreaksPage: NextPage = () => {
             onSelectedToday={handleSelectedToday}
             events={streakEvents}
             onToggleStreakEvent={toggleStreakEvent}
+            streakStartDate={streaks?.get(streakId || "")?.startDate}
+            streakEndDate={streaks?.get(streakId || "")?.endDate}
           />
         </div>
         <div className="my-4">
@@ -128,7 +130,19 @@ const StreaksPage: NextPage = () => {
             }
           />
         </div>
-        {streakStats && <StreakStats {...streakStats} />}
+        {streakStats && (
+          <StreakStats
+            currentStreak={streakStats.currentStreak}
+            longestStreak={streakStats.longestStreak}
+            shortestStreak={streakStats.shortestStreak}
+            streakDefeats={streakStats.streakDefeats}
+            streakEndDate={streakStats.streakEndDate}
+            streakStartDate={streakStats.streakStartDate}
+            streakSuccessPercentage={streakStats.streakSuccessPercentage}
+            streakTotalSuccess={streakStats.streakTotalSuccess}
+            totalDays={streakStats.totalDays}
+          />
+        )}
       </main>
     </>
   );
