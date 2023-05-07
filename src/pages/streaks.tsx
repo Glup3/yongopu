@@ -9,6 +9,9 @@ import { StreakStats } from "../components/Streak/StreakStats";
 
 import { trpc } from "../utils/trpc";
 
+// TODO: enable auto refetch
+const disableAutoRefetch = { refetchOnReconnect: false, refetchOnWindowFocus: false };
+
 const StreaksPage: NextPage = () => {
   const utils = trpc.useContext();
   const [streakId, setStreakId] = useState<string | undefined>();
@@ -17,16 +20,15 @@ const StreaksPage: NextPage = () => {
     onSuccess: (streaksMap) => {
       setStreakId(streaksMap.keys().next().value);
     },
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
+    ...disableAutoRefetch,
   });
   const { data: streakEvents } = trpc.streak.getStreakEvents.useQuery(
     { streakId: streakId || "" },
-    { enabled: !!streakId, refetchOnReconnect: false, refetchOnWindowFocus: false },
+    { enabled: !!streakId, ...disableAutoRefetch },
   );
   const { data: streakStats } = trpc.streak.calculateStreakStats.useQuery(
     { streakId: streakId || "" },
-    { enabled: !!streakId, refetchOnReconnect: false, refetchOnWindowFocus: false },
+    { enabled: !!streakId, ...disableAutoRefetch },
   );
 
   const toggleStreakEventMutation = trpc.streak.toggleStreakEvent.useMutation({
