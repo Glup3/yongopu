@@ -134,12 +134,11 @@ const StreaksPage: NextPage = () => {
           <StreakStats
             currentStreak={streakStats.currentStreak}
             longestStreak={streakStats.longestStreak}
-            shortestStreak={streakStats.shortestStreak}
-            streakDefeats={streakStats.streakDefeats}
+            streakDefeats={streakStats.totalStreakDefeats}
             streakEndDate={streakStats.streakEndDate}
             streakStartDate={streakStats.streakStartDate}
             streakSuccessPercentage={streakStats.streakSuccessPercentage}
-            streakTotalSuccess={streakStats.streakTotalSuccess}
+            streakTotalSuccess={streakStats.totalStreakSuccess}
             totalDays={streakStats.totalDays}
           />
         )}

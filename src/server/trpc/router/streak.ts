@@ -1,11 +1,5 @@
-import dayjs from "dayjs";
 import { z } from "zod";
-import {
-  calculateStreakDuration,
-  calculateLongestStreak,
-  calculateShortestStreak,
-  calculateStreakSuccessPercentage,
-} from "../../core/streak_logic";
+import { calculateStreakStats } from "../../core/streak_logic";
 
 import { router, protectedProcedure } from "../trpc";
 
@@ -28,6 +22,7 @@ export const streakRouter = router({
 
     return new Map<string, typeof streaks[0]>(streaks.map((streak) => [streak.id, streak]));
   }),
+
   getStreakEvents: protectedProcedure
     .input(z.object({ streakId: z.string() }))
     .query(({ input, ctx }) => {
@@ -35,6 +30,7 @@ export const streakRouter = router({
         where: { streakId: input.streakId },
       });
     }),
+
   calculateStreakStats: protectedProcedure
     .input(z.object({ streakId: z.string() }))
     .query(async ({ input, ctx }) => {
@@ -50,33 +46,14 @@ export const streakRouter = router({
         },
       });
 
-      const streakStartDate = streakWithEvents.startDate;
-      const streakEndDate = streakWithEvents.endDate || dayjs().subtract(1, "days").toDate();
-      const streakDefeats = streakWithEvents.events.map((s) => s.date);
-      const latestStreakEventDate = streakDefeats.at(-1) || streakStartDate;
-      const currentStreak = calculateStreakDuration(latestStreakEventDate, streakEndDate);
-      const longestStreak = calculateLongestStreak(streakStartDate, streakEndDate, streakDefeats);
-      const shortestStreak = calculateShortestStreak(streakStartDate, streakEndDate, streakDefeats);
-      const streakSuccessPercentage = streakStartDate
-        ? calculateStreakSuccessPercentage(streakStartDate, streakEndDate, streakDefeats.length)
-        : NaN;
-      const totalDays = streakStartDate
-        ? calculateStreakDuration(streakStartDate, streakEndDate).streak
-        : undefined;
-      const streakTotalSuccess = totalDays ? totalDays - streakDefeats.length : NaN;
+      const startDate = streakWithEvents.startDate;
+      const endDate = streakWithEvents.endDate;
+      const defeats = streakWithEvents.events.map((s) => s.date);
+      const streakStats = calculateStreakStats(startDate, endDate, defeats);
 
-      return {
-        streakStartDate,
-        streakEndDate: streakWithEvents.endDate,
-        streakDefeats: streakDefeats.length,
-        longestStreak,
-        shortestStreak,
-        streakSuccessPercentage,
-        currentStreak,
-        totalDays,
-        streakTotalSuccess,
-      };
+      return streakStats;
     }),
+
   toggleStreakEvent: protectedProcedure
     .input(
       z.object({
