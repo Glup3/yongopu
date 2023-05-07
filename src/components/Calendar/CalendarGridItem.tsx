@@ -14,8 +14,10 @@ import {
   animation,
   opacity,
   fontWeight,
+  cursor,
   // type TFontSize,
 } from "tailwindcss-classnames";
+import { TOGGLEABLE_ITEM_STATES } from "./Calendar";
 
 export type GridItemState = "NORMAL" | "DEFEATED" | "SUCCEEDED" | "STARTED" | "ENDED" | "LOADING";
 
@@ -44,6 +46,10 @@ const stylesDiv = (state: GridItemState, isFaded: boolean) =>
     justifyContent("justify-center"),
     animation({ "animate-pulse": state === "LOADING" }),
     opacity({ "opacity-50": isFaded }),
+    cursor({
+      "cursor-pointer": TOGGLEABLE_ITEM_STATES.includes(state),
+      "cursor-default": true,
+    }),
   );
 
 const stylesText = (isCircled: boolean) =>

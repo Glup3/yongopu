@@ -8,6 +8,8 @@ import { type StreakEvent } from "@prisma/client";
 
 const gridItemSize = 35;
 
+export const TOGGLEABLE_ITEM_STATES = ["DEFEATED", "SUCCEEDED"] as readonly GridItemState[];
+
 const getCalendarItemState = (
   events: StreakEvent[] | undefined,
   date: dayjs.Dayjs,
@@ -102,9 +104,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           );
           const isDateToday = itemDate.isSame(today, "day");
           const isDateFromThisMonth = itemDate.isSame(selectedDate, "month");
-          const canEventBeToggled = (["DEFEATED", "SUCCEEDED"] as GridItemState[]).includes(
-            itemEventType,
-          );
+          const canEventBeToggled = TOGGLEABLE_ITEM_STATES.includes(itemEventType);
 
           return (
             <CalendarGridItem
