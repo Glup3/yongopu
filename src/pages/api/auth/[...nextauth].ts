@@ -1,5 +1,6 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
+import GitHubProvider from "next-auth/providers/github";
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
@@ -22,6 +23,10 @@ export const authOptions: NextAuthOptions = {
     SpotifyProvider({
       clientId: env.SPOTIFY_CLIENT_ID,
       clientSecret: env.SPOTIFY_CLIENT_SECRET,
+    }),
+    GitHubProvider({
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
   ],
   theme: {

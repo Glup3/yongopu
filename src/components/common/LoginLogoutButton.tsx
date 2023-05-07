@@ -9,7 +9,7 @@ export const LoginLogoutButton = () => {
   const { data: sessionData } = useSession();
 
   return (
-    <button className="pt-1" onClick={sessionData ? () => signOut() : () => signIn("spotify")}>
+    <button className="pt-1" onClick={sessionData ? () => signOut() : () => signIn()}>
       {sessionData ? <LogOut size={size} /> : <Key size={size} color="#f59e0b" />}
     </button>
   );
