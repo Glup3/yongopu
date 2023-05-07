@@ -14,6 +14,10 @@ Yongopu [연거푸] is Korean and means "consecutively, successively, in a row" 
 pnpm dlx prisma db push
 ```
 
+## Tips
+
+Holding the delete button for `n` seconds deletes the streak item.
+
 ## What's next? How do I make an app with this?
 
 We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.

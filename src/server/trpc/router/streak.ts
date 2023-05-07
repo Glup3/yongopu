@@ -76,4 +76,25 @@ export const streakRouter = router({
         data: { streakId: input.streakId, eventType: "DEFEAT", date: input.eventDate },
       });
     }),
+
+  deleteStreak: protectedProcedure
+    .input(z.object({ streakId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.streak.delete({
+        where: {
+          id: input.streakId,
+        },
+      });
+    }),
+
+  updateStreakTitle: protectedProcedure
+    .input(z.object({ streakId: z.string(), streakTitle: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.streak.update({
+        where: { id: input.streakId },
+        data: {
+          title: input.streakTitle,
+        },
+      });
+    }),
 });
