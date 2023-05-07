@@ -130,18 +130,7 @@ const StreaksPage: NextPage = () => {
             }
           />
         </div>
-        {streakStats && (
-          <StreakStats
-            currentStreak={streakStats.currentStreak}
-            longestStreak={streakStats.longestStreak}
-            streakDefeats={streakStats.totalStreakDefeats}
-            streakEndDate={streakStats.streakEndDate}
-            streakStartDate={streakStats.streakStartDate}
-            streakSuccessPercentage={streakStats.streakSuccessPercentage}
-            streakTotalSuccess={streakStats.totalStreakSuccess}
-            totalDays={streakStats.totalDays}
-          />
-        )}
+        {streakStats && <StreakStats stats={streakStats} />}
       </main>
     </>
   );

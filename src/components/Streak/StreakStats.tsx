@@ -1,46 +1,36 @@
 import React from "react";
-import { type StreakFromTo } from "../../types/streak-from-to";
-import { StreakStatsColumn } from "./StreakStatsColumn";
 import dayjs from "dayjs";
+import { StreakStatsColumn } from "./StreakStatsColumn";
+import { type RouterOutputs } from "../../utils/trpc";
 
 type Props = {
-  streakStartDate: Date;
-  streakEndDate: Date | null;
-  streakDefeats: number;
-  longestStreak: StreakFromTo;
-  streakSuccessPercentage: number;
-  currentStreak: StreakFromTo;
-  totalDays: number | undefined;
-  streakTotalSuccess: number;
+  stats: RouterOutputs["streak"]["calculateStreakStats"];
 };
 
-export const StreakStats: React.FC<Props> = ({
-  streakStartDate,
-  streakEndDate,
-  streakDefeats,
-  longestStreak,
-  streakSuccessPercentage,
-  currentStreak,
-  totalDays,
-  streakTotalSuccess,
-}) => {
+export const StreakStats: React.FC<Props> = ({ stats }) => {
   return (
     <div className="flex flex-col mt-4">
       <StreakStatsColumn
-        text={streakEndDate ? "Last Streak" : "Current Streak"}
-        value={currentStreak.streak.toString()}
+        text={stats.streakEndDate ? "Last Streak" : "Current Streak"}
+        value={`${stats.currentStreak.streak}`}
       />
-      <StreakStatsColumn text="Total Days" value={totalDays?.toString() || "NaN"} />
-      <StreakStatsColumn text="Total Success" value={streakTotalSuccess.toString()} />
-      <StreakStatsColumn text="Total Defeats" value={streakDefeats.toString()} />
-      <StreakStatsColumn text="Longest Streak" value={longestStreak.streak.toString()} />
+      <StreakStatsColumn text="Total Days" value={`${stats.totalDays}`} />
+      <StreakStatsColumn text="Total Success" value={`${stats.totalStreakSuccess}`} />
+      <StreakStatsColumn text="Total Defeats" value={`${stats.totalStreakDefeats}`} />
+      <StreakStatsColumn text="Longest Streak" value={`${stats.longestStreak.streak}`} />
       <StreakStatsColumn
         text="Success Percentage"
-        value={`${streakSuccessPercentage.toFixed(2)}%`}
+        value={`${stats.streakSuccessPercentage.toFixed(2)}%`}
       />
-      <StreakStatsColumn text="Start Date" value={dayjs(streakStartDate).format("DD.MM.YYYY")} />
-      {streakEndDate && (
-        <StreakStatsColumn text="End Date" value={dayjs(streakEndDate).format("DD.MM.YYYY")} />
+      <StreakStatsColumn
+        text="Start Date"
+        value={dayjs(stats.streakStartDate).format("DD.MM.YYYY")}
+      />
+      {stats.streakEndDate && (
+        <StreakStatsColumn
+          text="End Date"
+          value={dayjs(stats.streakEndDate).format("DD.MM.YYYY")}
+        />
       )}
     </div>
   );
